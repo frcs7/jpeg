@@ -8,6 +8,8 @@
 
 #include "DCT.h"
 
+using namespace std;
+
 #pragma warning(disable : 4996)；
 
 
@@ -580,7 +582,58 @@ int main()
 
    }
 //差分处理完成
+
    
+   short counter = 0;
+
+   vector<vector<short> > RLE;
+
+   vector<short> RLEtemp;
+
+   for(short k = 0; k < 32*32; k++)
+
+   {
+
+      RLEtemp.push_back(ZY[k][0]);
+
+      RLE.push_back(RLEtemp);
+
+      RLEtemp.clear();
+
+      for(short i =1 ; i < 64; i++) //i=1时做特殊处理，因为是直流系数
+
+      {
+
+         if (ZY[k][i] == 0)
+
+         {
+
+            counter++;
+
+         }
+
+         else
+
+         {
+
+            RLEtemp.push_back(counter);
+
+            RLEtemp.push_back(ZY[k][i]);
+
+            RLE.push_back(RLEtemp);
+
+            RLEtemp.clear();
+
+            counter = 0;
+
+         }
+
+      }
+
+   }
+
+
+//下面是测试程序！
    cout << ZY[1][0] << endl;
 
    for (int i =0; i < 64; i++)
@@ -590,7 +643,8 @@ int main()
       cout << ZY[2][i] << '\t';
 
    }
-
+   cout << "\n" << endl;
+std::cerr <<  clock()/double(CLOCKS_PER_SEC) << std::endl;
 
 /*
    for (int u = 0; u < NUM; u++)
