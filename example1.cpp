@@ -4,6 +4,8 @@
 
 #include <iostream>
 
+#include <vector>
+
 #include "DCT.h"
 
 #pragma warning(disable : 4996)；
@@ -554,36 +556,38 @@ int main()
 //量化处理后的Cb数据矩阵ZigZag转换完成！
 //所有数据ZigZag转换完成！
 
-   for (short k = 1; k <= 32*32-1; k++)
+   for (short k = 0; k < 32*32; k++)
 
    {
 
-      ZY[k][1] -=ZY[k-1][1];//对一维矩阵ZY的直流系数之间做差分
+      ZY[32*32-1 - k][0] -=ZY[32*32-2 - k][0];//对一维矩阵ZY的直流系数之间做差分
 
    }
 
-   for (short k = 1; k <= 32*32-1; k++)
+   for (short k = 0; k < 32*32; k++)
 
    {
 
-      ZCr[k][1] -=ZCr[k-1][1];//对一维矩阵ZCr做差分
+      ZCr[32*32-1 - k][0] -=ZCr[32*32-2 - k][0];//对一维矩阵ZCr做差分
 
    }
 
-   for (short k = 1; k <= 32*32-1; k++)
+   for (short k = 0; k < 32*32; k++)
 
    {
 
-      ZCb[k][1] -=ZCb[k-1][1];//对一维矩阵ZCb做差分
+      ZCb[32*32-1 - k][0] -=ZCb[32*32-2 - k][0];//对一维矩阵ZCb做差分
 
    }
 //差分处理完成
+   
+   cout << ZY[1][0] << endl;
 
    for (int i =0; i < 64; i++)
 
    {
 
-      cout << ZCr[2][i] << '\t';
+      cout << ZY[2][i] << '\t';
 
    }
 
