@@ -16,6 +16,47 @@ using namespace std;
 
 #pragma warning(disable : 4996)；
 
+double *tomatrix(double X[256 * 256])
+{
+
+    // double matrixX[256][256];
+
+    double (*r)[256] = new double[256][256];
+
+    for (int i = 0; i < 256; i++)
+
+    {
+
+        for (int j = 0; j < 256; j++)
+
+        {
+
+            r[i][j] = X[256 * i + j] - 128; // Y数据的矩阵
+        }
+    }
+
+    return r[256];
+
+    delete r;
+
+}
+
+short codelength(int a) //a=ZY[k][i]  这是把游程编码的第二位变成编码长度
+
+{
+
+    short k=0;
+
+    do
+
+    {
+        k++;
+    } while (a >= pow(2, k));
+
+    return k;
+
+}
+
 string binary(int n)//这是转换成游程编码所需的伪二进制
 
 {
@@ -30,7 +71,7 @@ string binary(int n)//这是转换成游程编码所需的伪二进制
 
         r = (n%2 == 0 ? "0" : "1") + r;
 
-        n/2;
+        n = n/2;
 
     }
 
@@ -41,22 +82,6 @@ string binary(int n)//这是转换成游程编码所需的伪二进制
     
 
     return r;
-
-}
-
-short codelength(int a) //a=ZY[k][i]  这是把游程编码的第二位变成编码长度
-
-{
-
-    short m=0;
-
-    do
-
-    {
-        m++;
-    } while (a >= pow(2, m));
-
-    return m;
 
 }
 
@@ -146,8 +171,12 @@ int main()
    
 
 
-   double matrixY[256][256];
+   //double matrixY[256][256];
 
+   //matrixY = tomatrix(Y);
+
+
+   /*
    for (int i = 0; i < 256; i++)
 
    {
@@ -159,7 +188,7 @@ int main()
          matrixY[i][j] = Y[256 * i + j] - 128; // Y数据的矩阵
       }
    }
-
+   */
    double dmatrixY[32 * 32][8][8];
 
    for (int i = 0; i < 256; i++)
@@ -170,7 +199,7 @@ int main()
 
       {
 
-         dmatrixY[32 * (i / 8) + j / 8][i % 8][j % 8] = matrixY[i][j]; //把Y数据分成32*32个小块
+         dmatrixY[32 * (i / 8) + j / 8][i % 8][j % 8] = *tomatrix(Y); //把Y数据分成32*32个小块
       }
    }
    
@@ -678,9 +707,9 @@ int main()
 
       }
 
-      map<short, vector<vector<short> >> RLEmap;
+      map<short, vector<vector<short> > > RLEmap;
 
-      RLEmap.insert(pair<short, vector<vector<short> >>(k, RLE));//游程编码完成，事实上所需的转换也已经完成，只需要用binary和codelength把RLE中的需变换的数字变换之后就可以了
+      RLEmap.insert(pair<short, vector<vector<short> > >(k, RLE));//游程编码完成，事实上所需的转换也已经完成，只需要用binary和codelength把RLE中的需变换的数字变换之后就可以了
 
    }
 
