@@ -14,32 +14,6 @@ using namespace std;
  
 #define PI 3.1415926
  
-
- /*
-double round(double a)
- 
-{
- 
-         if (a >= 0)
- 
-         {
- 
-                   return (short)(a + 0.5);
- 
-         }
- 
-         else
- 
-         {
- 
-                   return (short)(a - 0.5);
- 
-         }
- 
-}
-*/
-//DCT
- 
 void DCT(double data[NUM][NUM])
  
 {

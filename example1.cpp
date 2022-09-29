@@ -6,11 +6,57 @@
 
 #include <vector>
 
+#include <string.h>
+
 #include "DCT.h"
 
 using namespace std;
 
 #pragma warning(disable : 4996)；
+
+string binary(int n)//这是转换成二进制
+
+{
+
+    short m = codelength(n);
+
+    string r;
+
+    while(n != 0)
+
+    {
+
+        r = (n%2 == 0 ? "0" : "1") + r;
+
+        n/2;
+
+    }
+
+    while (r.length() < m)
+    {
+      r = "0" + r;
+    }
+    
+
+    return r;
+
+}
+
+short codelength(int a) //a=ZY[k][i]  这是把游程编码的第二位变成编码长度
+
+{
+
+    short m=0;
+
+    do
+
+    {
+        m++;
+    } while (a >= pow(2, m));
+
+    return m;
+
+}
 
 
 int main()
@@ -661,132 +707,6 @@ std::cerr <<  clock()/double(CLOCKS_PER_SEC) << std::endl;
       cout << endl;
    }
 */
-   /*
-      int bt[256] = {0};
-      int gt[256] = {0};
-      int rt[256] = {0};
 
-      for (int i = 0; i < 256; i++)
-
-      {
-
-         for (int j = 0; j < width * height; j++)
-
-         {
-
-            if (i == blue[j])
-
-               bt[i]++;
-
-            if (i == green[j])
-
-               gt[i]++;
-
-            if (i == red[j])
-
-               rt[i]++;
-         }
-
-      } //统计RGB值出现的次数
-
-      double freqr[256] = {0};
-
-      double freqg[256] = {0};
-
-      double freqb[256] = {0};
-
-      for (int i = 0; i < 256; i++)
-
-      {
-
-         freqr[i] = double(rt[i]) / (width * height);
-
-         freqg[i] = double(gt[i]) / (width * height);
-
-         freqb[i] = double(bt[i]) / (width * height);
-
-      } //计算出现的频率
-
-      double hr = 0;
-      double hg = 0;
-      double hb = 0;
-
-      for (int i = 0; i < 256; i++)
-
-      {
-
-         if (freqr[i] != 0)
-
-            hr = hr - freqr[i] * log(freqr[i]) / log(2);
-
-         if (freqg[i] != 0)
-
-            hg = hg - freqg[i] * log(freqg[i]) / log(2);
-
-         if (freqb[i] != 0)
-
-            hb = hb - freqb[i] * log(freqb[i]) / log(2);
-
-      } //计算RGB的熵
-
-      FILE *RF;
-      FILE *GF;
-      FILE *BF;
-
-      if ((RF = fopen("red.txt", "w")) == NULL)
-
-         printf("fail\n");
-
-      else
-
-         printf("red success\n");
-
-      if ((GF = fopen("green.txt", "w")) == NULL)
-
-         printf("fail\n");
-
-      else
-
-         printf("green success\n");
-
-      if ((BF = fopen("blue.txt", "w")) == NULL)
-
-         printf("fail\n");
-
-      else
-
-         printf("blue success\n"); //以“w”方式创建TXT文件
-
-      char s[] = "symbol\tfrequency\n";
-
-      fprintf(RF, s);
-      fprintf(GF, s);
-      fprintf(BF, s);
-
-      for (int i = 0; i < 256; i++)
-
-      {
-
-         fprintf(BF, "%d\t%f\n", i, freqb[i]);
-
-         fprintf(GF, "%d\t%f\n", i, freqg[i]);
-
-         fprintf(RF, "%d\t%f\n", i, freqr[i]);
-      }
-
-      fprintf(BF, "entropy = %f", hb);
-
-      fprintf(GF, "entropy = %f", hg);
-
-      fprintf(RF, "entropy = %f", hr); //将数据写入TXT文件
-
-      fclose(fp);
-
-      fclose(BF);
-
-      fclose(GF);
-
-      fclose(RF);
-   */
    return 0;
 }
