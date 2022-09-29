@@ -8,13 +8,15 @@
 
 #include <string.h>
 
+#include <map>
+
 #include "DCT.h"
 
 using namespace std;
 
 #pragma warning(disable : 4996)；
 
-string binary(int n)//这是转换成二进制
+string binary(int n)//这是转换成游程编码所需的伪二进制
 
 {
 
@@ -664,7 +666,7 @@ int main()
 
             RLEtemp.push_back(counter);
 
-            RLEtemp.push_back(ZY[k][i]);
+            RLEtemp.push_back(codelength(ZY[k][i]));
 
             RLE.push_back(RLEtemp);
 
@@ -675,6 +677,10 @@ int main()
          }
 
       }
+
+      map<short, vector<vector<short> >> RLEmap;
+
+      RLEmap.insert(pair<short, vector<vector<short> >>(k, RLE));//游程编码完成，事实上所需的转换也已经完成，只需要用binary和codelength把RLE中的需变换的数字变换之后就可以了
 
    }
 
