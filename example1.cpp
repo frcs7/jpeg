@@ -16,30 +16,6 @@ using namespace std;
 
 #pragma warning(disable : 4996)；
 
-double *tomatrix(double X[256 * 256])
-{
-
-    // double matrixX[256][256];
-
-    double (*r)[256] = new double[256][256];
-
-    for (int i = 0; i < 256; i++)
-
-    {
-
-        for (int j = 0; j < 256; j++)
-
-        {
-
-            r[i][j] = X[256 * i + j] - 128; // Y数据的矩阵
-        }
-    }
-
-    return r[256];
-
-    delete r;
-
-}
 
 short codelength(int a) //a=ZY[k][i]  这是把游程编码的第二位变成编码长度
 
@@ -51,17 +27,35 @@ short codelength(int a) //a=ZY[k][i]  这是把游程编码的第二位变成编
 
     {
         k++;
-    } while (a >= pow(2, k));
+    } while (fabs(a) >= pow(2, k));
 
     return k;
 
 }
 
-string binary(int n)//这是转换成游程编码所需的伪二进制
+string binary(int a)//这是转换成游程编码所需的伪二进制
 
 {
 
+    int n;
+
     short m = codelength(n);
+    
+    if(a < 0)
+
+    {
+
+      n = a + pow(2, m);
+
+    }
+
+    if(a > 0)
+
+    {
+
+      n = pow(2, m) - a;
+
+    }
 
     string r;
 
@@ -103,12 +97,6 @@ int main()
    unsigned char green[width * height] = {0};
 
    unsigned char blue[width * height] = {0};
-
-   double Y[width * height] = {0};
-
-   double Cr[width * height] = {0};
-
-   double Cb[width * height] = {0};
 
    FILE *fp;
 
@@ -157,6 +145,12 @@ int main()
 
    } //将RGB的值分别存放在单独的数组中
 
+   double Y[width * height] = {0};
+
+   double Cr[width * height] = {0};
+
+   double Cb[width * height] = {0};
+
    for (int i = 0; i < width * height; i++)
 
    {
@@ -171,12 +165,12 @@ int main()
    
 
 
-   //double matrixY[256][256];
+   double matrixY[256][256];
 
    //matrixY = tomatrix(Y);
 
 
-   /*
+   
    for (int i = 0; i < 256; i++)
 
    {
@@ -185,10 +179,12 @@ int main()
 
       {
 
+         //matrixY[i][j] = Y[256 * i + j] - 128; // Y数据的矩阵
          matrixY[i][j] = Y[256 * i + j] - 128; // Y数据的矩阵
       }
    }
-   */
+
+  
    double dmatrixY[32 * 32][8][8];
 
    for (int i = 0; i < 256; i++)
@@ -199,7 +195,7 @@ int main()
 
       {
 
-         dmatrixY[32 * (i / 8) + j / 8][i % 8][j % 8] = *tomatrix(Y); //把Y数据分成32*32个小块
+         dmatrixY[32 * (i / 8) + j / 8][i % 8][j % 8] = matrixY[i][j]; //把Y数据分成32*32个小块
       }
    }
    
@@ -215,7 +211,7 @@ int main()
 
          for (int j = 0; j < 8; j++)
 
-         {                                                     //mark
+         {                                                     
          
             temp[i][j] = dmatrixY[k][i][j];              
             
@@ -231,7 +227,7 @@ int main()
 
          for (int j = 0; j < 8; j++)
 
-         {                                                     //mark
+         {                                                     
          
             dmatrixY[k][i][j] = temp[i][j];                // Y通道的离散余弦变换完成啦！
             
@@ -281,7 +277,7 @@ int main()
 
          for (int j = 0; j < 8; j++)
 
-         {                                                     //mark
+         {                                                     
          
             temp[i][j] = dmatrixCb[k][i][j];              
             
@@ -297,7 +293,7 @@ int main()
 
          for (int j = 0; j < 8; j++)
 
-         {                                                     //mark
+         {                                                     
          
             dmatrixCb[k][i][j] = temp[i][j];                // Cb通道的离散余弦变换完成啦！
             
@@ -347,7 +343,7 @@ int main()
 
          for (int j = 0; j < 8; j++)
 
-         {                                                     //mark
+         {                                                     
          
             temp[i][j] = dmatrixCr[k][i][j];              
             
@@ -363,7 +359,7 @@ int main()
 
          for (int j = 0; j < 8; j++)
 
-         {                                                     //mark
+         {                                                     
          
             dmatrixCr[k][i][j] = temp[i][j];                // Cr通道的离散余弦变换完成啦！
             
@@ -635,7 +631,7 @@ int main()
 //量化处理后的Cb数据矩阵ZigZag转换完成！
 //所有数据ZigZag转换完成！
 
-   for (short k = 0; k < 32*32; k++)
+   for (short k = 0; k < 32*32-1; k++)
 
    {
 
@@ -643,7 +639,7 @@ int main()
 
    }
 
-   for (short k = 0; k < 32*32; k++)
+   for (short k = 0; k < 32*32-1; k++)
 
    {
 
@@ -651,7 +647,7 @@ int main()
 
    }
 
-   for (short k = 0; k < 32*32; k++)
+   for (short k = 0; k < 32*32-1; k++)
 
    {
 
@@ -661,21 +657,23 @@ int main()
 //差分处理完成
 
    
-   short counter = 0;
+   
 
-   vector<vector<short> > RLE;
+   vector<vector<short> > YRLE;
 
-   vector<short> RLEtemp;
+   vector<short> YRLEtemp;
 
    for(short k = 0; k < 32*32; k++)
 
    {
 
-      RLEtemp.push_back(ZY[k][0]);
+      short counter = 0;
 
-      RLE.push_back(RLEtemp);
+      YRLEtemp.push_back(ZY[k][0]);
 
-      RLEtemp.clear();
+      YRLE.push_back(YRLEtemp);
+
+      YRLEtemp.clear();
 
       for(short i =1 ; i < 64; i++) //i=1时做特殊处理，因为是直流系数
 
@@ -693,13 +691,13 @@ int main()
 
          {
 
-            RLEtemp.push_back(counter);
+            YRLEtemp.push_back(counter);
 
-            RLEtemp.push_back(codelength(ZY[k][i]));
+            YRLEtemp.push_back(codelength(ZY[k][i]));
 
-            RLE.push_back(RLEtemp);
+            YRLE.push_back(YRLEtemp);
 
-            RLEtemp.clear();
+            YRLEtemp.clear();
 
             counter = 0;
 
@@ -707,11 +705,120 @@ int main()
 
       }
 
-      map<short, vector<vector<short> > > RLEmap;
+      map<short, vector<vector<short> > > YRLEmap;//第一个short只是index
 
-      RLEmap.insert(pair<short, vector<vector<short> > >(k, RLE));//游程编码完成，事实上所需的转换也已经完成，只需要用binary和codelength把RLE中的需变换的数字变换之后就可以了
+      YRLEmap.insert(pair<short, vector<vector<short> > >(k, YRLE));
 
-   }
+   }//Y通道游程编码完成
+
+   vector<vector<short> > CrRLE;
+
+   vector<short> CrRLEtemp;
+
+   for(short k = 0; k < 32*32; k++)
+
+   {
+
+      short counter = 0;
+
+      CrRLEtemp.push_back(ZCr[k][0]);
+
+      CrRLE.push_back(CrRLEtemp);
+
+      CrRLEtemp.clear();
+
+      for(short i =1 ; i < 64; i++) //i=1时做特殊处理，因为是直流系数
+
+      {
+
+         if (ZCr[k][i] == 0)
+
+         {
+
+            counter++;
+
+         }
+
+         else
+
+         {
+
+            CrRLEtemp.push_back(counter);
+
+            CrRLEtemp.push_back(codelength(ZCr[k][i]));
+
+            CrRLE.push_back(CrRLEtemp);
+
+            CrRLEtemp.clear();
+
+            counter = 0;
+
+         }
+
+      }
+
+      map<short, vector<vector<short> > > CrRLEmap;//第一个short只是index
+
+      CrRLEmap.insert(pair<short, vector<vector<short> > >(k, CrRLE));
+
+   }//Cr通道游程编码完成
+
+
+
+   vector<vector<short> > CbRLE;
+
+   vector<short> CbRLEtemp;
+
+   for(short k = 0; k < 32*32; k++)
+
+   {
+
+      short counter = 0;
+
+      CbRLEtemp.push_back(ZCb[k][0]);
+
+      CbRLE.push_back(CbRLEtemp);
+
+      CbRLEtemp.clear();
+
+      for(short i =1 ; i < 64; i++) //i=1时做特殊处理，因为是直流系数
+
+      {
+
+         if (ZCb[k][i] == 0)
+
+         {
+
+            counter++;
+
+         }
+
+         else
+
+         {
+
+            CbRLEtemp.push_back(counter);
+
+            CbRLEtemp.push_back(codelength(ZCb[k][i]));
+
+            CbRLE.push_back(CbRLEtemp);
+
+            CbRLEtemp.clear();
+
+            counter = 0;
+
+         }
+
+      }
+
+      map<short, vector<vector<short> > > CbRLEmap;//第一个short只是index
+
+      CbRLEmap.insert(pair<short, vector<vector<short> > >(k, CbRLE));
+
+   }   //Cb通道游程编码完成
+//游程编码全部完成，事实上所需的转换也已经完成，只需要用binary和codelength函数把RLE中的需变换的数字变换之后就可以了
+
+
 
 
 //下面是测试程序！
@@ -721,7 +828,7 @@ int main()
 
    {
 
-      cout << ZY[2][i] << '\t';
+      cout << ZY[0][i] << '\t';
 
    }
    cout << "\n" << endl;
